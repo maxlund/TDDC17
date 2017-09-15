@@ -302,22 +302,6 @@ class MyAgentProgram implements AgentProgram {
         state.agent_last_action = last_action;
         if (last_action == 1)
         {
-        	if (state.agent_direction == MyAgentState.NORTH)
-        	{
-        		state.agent_y_position--;
-        	}
-	    	if (state.agent_direction == MyAgentState.SOUTH)
-	    	{
-	    		state.agent_y_position++;
-	    	}
-	    	if (state.agent_direction == MyAgentState.EAST)
-	    	{
-	    		state.agent_x_position++;
-	    	}
-	    	if (state.agent_direction == MyAgentState.WEST)
-	    	{
-	    		state.agent_x_position--;
-	    	}
             return LIUVacuumEnvironment.ACTION_MOVE_FORWARD;
         }
         if (last_action == 2) 
