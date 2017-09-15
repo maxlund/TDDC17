@@ -264,11 +264,9 @@ class MyAgentProgram implements AgentProgram {
     	System.out.println("x=" + state.agent_x_position);
     	System.out.println("y=" + state.agent_y_position);
     	System.out.println("dir=" + state.agent_direction);
-		currentPosition = new Coordinates(state.agent_x_position, state.agent_y_position);
-
 		if (initStack)
 		{
-			history.push(currentPosition);
+			history.push(new Coordinates(state.agent_x_position, state.agent_y_position));
 			initStack = false;
 		}
 		
@@ -317,21 +315,22 @@ class MyAgentProgram implements AgentProgram {
 	    } 
 	    else
 	    {
+			currentPosition = new Coordinates(state.agent_x_position, state.agent_y_position);
 			int nextAction;
 			if (hasUnknownNeighbours(currentPosition))
 			{
 				backtracking = false;
 				
-				if (state.agent_last_action == state.ACTION_MOVE_FORWARD)
+
+				if (state.agent_last_action == state.ACTION_MOVE_FORWARD && !bump)
 				{
 					Coordinates temp = history.peek();
 					System.out.println("Top of stack: (" + temp.x + ", " + temp.y + ")");
 					System.out.println("Current pos: (" + currentPosition.x + ", " + currentPosition.y + ")");
 					if ( !(temp.x == currentPosition.x && temp.y == currentPosition.y) )
 						history.push(currentPosition);
-
 				}
-				
+
 				Coordinates nextPosition = getNeighbour(state.agent_direction, currentPosition);
 				nextAction = getAction(state.agent_direction, currentPosition, nextPosition);		
 			}
