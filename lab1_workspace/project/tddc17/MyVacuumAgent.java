@@ -38,61 +38,61 @@ class MyAgentState
 	
     MyAgentState()
     {
-	for (int i=0; i < world.length; i++)
-	    for (int j=0; j < world[i].length ; j++)
-		world[i][j] = UNKNOWN;
-	world[1][1] = HOME;
-	agent_last_action = ACTION_NONE;
+		for (int i=0; i < world.length; i++)
+			for (int j=0; j < world[i].length ; j++)
+				world[i][j] = UNKNOWN;
+		world[1][1] = HOME;
+		agent_last_action = ACTION_NONE;
     }
     // Based on the last action and the received percept updates the x & y agent position
     public void updatePosition(DynamicPercept p)
     {
-	Boolean bump = (Boolean)p.getAttribute("bump");
+		Boolean bump = (Boolean)p.getAttribute("bump");
 
-	if (agent_last_action==ACTION_MOVE_FORWARD && !bump)
-	{
-	    switch (agent_direction) {
-	    case MyAgentState.NORTH:
-		agent_y_position--;
-		break;
-	    case MyAgentState.EAST:
-		agent_x_position++;
-		break;
-	    case MyAgentState.SOUTH:
-		agent_y_position++;
-		break;
-	    case MyAgentState.WEST:
-		agent_x_position--;
-		break;
-	    }
-	}
+		if (agent_last_action==ACTION_MOVE_FORWARD && !bump)
+		{
+			switch (agent_direction) {
+			case MyAgentState.NORTH:
+				agent_y_position--;
+				break;
+			case MyAgentState.EAST:
+				agent_x_position++;
+				break;
+			case MyAgentState.SOUTH:
+				agent_y_position++;
+				break;
+			case MyAgentState.WEST:
+				agent_x_position--;
+				break;
+			}
+		}
 		
     }
 	
     public void updateWorld(int x_position, int y_position, int info)
     {
-	world[x_position][y_position] = info;
+		world[x_position][y_position] = info;
     }
 	
     public void printWorldDebug()
     {
-	for (int i=0; i < world.length; i++)
-	{
-	    for (int j=0; j < world[i].length ; j++)
-	    {
-		if (world[j][i]==UNKNOWN)
-		    System.out.print(" ? ");
-		if (world[j][i]==WALL)
-		    System.out.print(" # ");
-		if (world[j][i]==CLEAR)
-		    System.out.print(" . ");
-		if (world[j][i]==DIRT)
-		    System.out.print(" D ");
-		if (world[j][i]==HOME)
-		    System.out.print(" H ");
-	    }
-	    System.out.println("");
-	}
+		for (int i=0; i < world.length; i++)
+		{
+			for (int j=0; j < world[i].length ; j++)
+			{
+				if (world[j][i]==UNKNOWN)
+					System.out.print(" ? ");
+				if (world[j][i]==WALL)
+					System.out.print(" # ");
+				if (world[j][i]==CLEAR)
+					System.out.print(" . ");
+				if (world[j][i]==DIRT)
+					System.out.print(" D ");
+				if (world[j][i]==HOME)
+					System.out.print(" H ");
+			}
+			System.out.println("");
+		}
     }
 }
 
@@ -109,295 +109,277 @@ class MyAgentProgram implements AgentProgram {
     private Coordinates previousPosition;
     private Coordinates startPosition;
     private boolean initStack = true;
-    private boolean backtracking = false;
 
     private boolean hasUnknownNeighbours(Coordinates coords)
     {
-	return  (state.world[coords.x + 1][coords.y] == state.UNKNOWN ||
-		 state.world[coords.x - 1][coords.y] == state.UNKNOWN ||
-		 state.world[coords.x][coords.y + 1] == state.UNKNOWN ||
-		 state.world[coords.x][coords.y - 1] == state.UNKNOWN);
+		return  (state.world[coords.x + 1][coords.y] == state.UNKNOWN ||
+				 state.world[coords.x - 1][coords.y] == state.UNKNOWN ||
+				 state.world[coords.x][coords.y + 1] == state.UNKNOWN ||
+				 state.world[coords.x][coords.y - 1] == state.UNKNOWN);
 		
     }
 
     private Coordinates getNeighbour(int currentDirection, Coordinates coords)
     {
-	if (currentDirection == MyAgentState.EAST)
-	{
-	    if (state.world[coords.x + 1][coords.y] == state.UNKNOWN)
-		return new Coordinates(coords.x + 1, coords.y);
-	    if (state.world[coords.x][coords.y + 1] == state.UNKNOWN)
-		return new Coordinates(coords.x, coords.y + 1);	   
-	    if (state.world[coords.x][coords.y - 1] == state.UNKNOWN)
-		return new Coordinates(coords.x, coords.y - 1);
-	    if (state.world[coords.x - 1][coords.y] == state.UNKNOWN)
-		return new Coordinates(coords.x - 1, coords.y);
-	}
-	if (currentDirection == MyAgentState.WEST)
-	{
-	    if (state.world[coords.x - 1][coords.y] == state.UNKNOWN)
-		return new Coordinates(coords.x - 1, coords.y);
-	    if (state.world[coords.x][coords.y + 1] == state.UNKNOWN)
-		return new Coordinates(coords.x, coords.y + 1);
-	    if (state.world[coords.x][coords.y - 1] == state.UNKNOWN)
-		return new Coordinates(coords.x, coords.y - 1);
-	    if (state.world[coords.x + 1][coords.y] == state.UNKNOWN)
-		return new Coordinates(coords.x + 1, coords.y);
-	}
-	if (currentDirection == MyAgentState.SOUTH)
-	{
-	    if (state.world[coords.x][coords.y + 1] == state.UNKNOWN)
-		return new Coordinates(coords.x, coords.y + 1);
-	    if (state.world[coords.x + 1][coords.y] == state.UNKNOWN)
-		return new Coordinates(coords.x + 1, coords.y);
-	    if (state.world[coords.x - 1][coords.y] == state.UNKNOWN)
-		return new Coordinates(coords.x - 1, coords.y);
-	    if (state.world[coords.x][coords.y - 1] == state.UNKNOWN)
-		return new Coordinates(coords.x, coords.y - 1);
-	}
-	if (currentDirection == MyAgentState.NORTH)
-	{
-	    if (state.world[coords.x][coords.y - 1] == state.UNKNOWN)
-		return new Coordinates(coords.x, coords.y - 1);
-	    if (state.world[coords.x + 1][coords.y] == state.UNKNOWN)
-		return new Coordinates(coords.x + 1, coords.y);
-	    if (state.world[coords.x - 1][coords.y] == state.UNKNOWN)
-		return new Coordinates(coords.x - 1, coords.y);
-	    if (state.world[coords.x][coords.y + 1] == state.UNKNOWN)
-		return new Coordinates(coords.x, coords.y + 1);
-	}
+		if (currentDirection == MyAgentState.EAST)
+		{
+			if (state.world[coords.x + 1][coords.y] == state.UNKNOWN)
+				return new Coordinates(coords.x + 1, coords.y);
+			if (state.world[coords.x][coords.y + 1] == state.UNKNOWN)
+				return new Coordinates(coords.x, coords.y + 1);	   
+			if (state.world[coords.x][coords.y - 1] == state.UNKNOWN)
+				return new Coordinates(coords.x, coords.y - 1);
+			if (state.world[coords.x - 1][coords.y] == state.UNKNOWN)
+				return new Coordinates(coords.x - 1, coords.y);
+		}
+		if (currentDirection == MyAgentState.WEST)
+		{
+			if (state.world[coords.x - 1][coords.y] == state.UNKNOWN)
+				return new Coordinates(coords.x - 1, coords.y);
+			if (state.world[coords.x][coords.y + 1] == state.UNKNOWN)
+				return new Coordinates(coords.x, coords.y + 1);
+			if (state.world[coords.x][coords.y - 1] == state.UNKNOWN)
+				return new Coordinates(coords.x, coords.y - 1);
+			if (state.world[coords.x + 1][coords.y] == state.UNKNOWN)
+				return new Coordinates(coords.x + 1, coords.y);
+		}
+		if (currentDirection == MyAgentState.SOUTH)
+		{
+			if (state.world[coords.x][coords.y + 1] == state.UNKNOWN)
+				return new Coordinates(coords.x, coords.y + 1);
+			if (state.world[coords.x + 1][coords.y] == state.UNKNOWN)
+				return new Coordinates(coords.x + 1, coords.y);
+			if (state.world[coords.x - 1][coords.y] == state.UNKNOWN)
+				return new Coordinates(coords.x - 1, coords.y);
+			if (state.world[coords.x][coords.y - 1] == state.UNKNOWN)
+				return new Coordinates(coords.x, coords.y - 1);
+		}
+		if (currentDirection == MyAgentState.NORTH)
+		{
+			if (state.world[coords.x][coords.y - 1] == state.UNKNOWN)
+				return new Coordinates(coords.x, coords.y - 1);
+			if (state.world[coords.x + 1][coords.y] == state.UNKNOWN)
+				return new Coordinates(coords.x + 1, coords.y);
+			if (state.world[coords.x - 1][coords.y] == state.UNKNOWN)
+				return new Coordinates(coords.x - 1, coords.y);
+			if (state.world[coords.x][coords.y + 1] == state.UNKNOWN)
+				return new Coordinates(coords.x, coords.y + 1);
+		}
 
-	return new Coordinates(1, 1); // dummy return value
+		return new Coordinates(1, 1); // dummy return value
     }
 
     private int getAction(int currentDirection, Coordinates currentPosition, Coordinates nextPosition)
     {
-	if (currentDirection == MyAgentState.EAST)
-	{
-	    if (nextPosition.x > currentPosition.x)
-		return state.ACTION_MOVE_FORWARD;
-	    if (nextPosition.y > currentPosition.y)
-		return state.ACTION_TURN_RIGHT;
-	    if (nextPosition.y < currentPosition.y)
-		return state.ACTION_TURN_LEFT;
-	    if (nextPosition.x < currentPosition.x)
-		return state.ACTION_TURN_RIGHT;
+		if (currentDirection == MyAgentState.EAST)
+		{
+			if (nextPosition.x > currentPosition.x)
+				return state.ACTION_MOVE_FORWARD;
+			if (nextPosition.y > currentPosition.y)
+				return state.ACTION_TURN_RIGHT;
+			if (nextPosition.y < currentPosition.y)
+				return state.ACTION_TURN_LEFT;
+			if (nextPosition.x < currentPosition.x)
+				return state.ACTION_TURN_RIGHT;
 				 
-	}
-	if (currentDirection == MyAgentState.WEST)
-	{
-	    if (nextPosition.x < currentPosition.x)
-		return state.ACTION_MOVE_FORWARD;
-	    if (nextPosition.y > currentPosition.y)
-		return state.ACTION_TURN_LEFT;
-	    if (nextPosition.y < currentPosition.y)
-		return state.ACTION_TURN_RIGHT;
-	    if (nextPosition.x > currentPosition.x)
-		return state.ACTION_TURN_RIGHT;
-	}	
-	if (currentDirection == MyAgentState.SOUTH)
-	{
-	    if (nextPosition.y > currentPosition.y)
-		return state.ACTION_MOVE_FORWARD;
-	    if (nextPosition.x > currentPosition.x)
-		return state.ACTION_TURN_LEFT;
-	    if (nextPosition.x < currentPosition.x)
-		return state.ACTION_TURN_RIGHT;
-	    if (nextPosition.y < currentPosition.y)
-		return state.ACTION_TURN_RIGHT;
-	}		
-	if (currentDirection == MyAgentState.NORTH)
-	{
-	    if (nextPosition.y < currentPosition.y)
-		return state.ACTION_MOVE_FORWARD;
-	    if (nextPosition.x > currentPosition.x)
-		return state.ACTION_TURN_RIGHT;
-	    if (nextPosition.x < currentPosition.x)
-		return state.ACTION_TURN_LEFT;
-	    if (nextPosition.y > currentPosition.y)
-		return state.ACTION_TURN_RIGHT;
-	}
-	System.out.println("--------- getAction error --------");
-	return state.ACTION_SUCK; // dummy
+		}
+		if (currentDirection == MyAgentState.WEST)
+		{
+			if (nextPosition.x < currentPosition.x)
+				return state.ACTION_MOVE_FORWARD;
+			if (nextPosition.y > currentPosition.y)
+				return state.ACTION_TURN_LEFT;
+			if (nextPosition.y < currentPosition.y)
+				return state.ACTION_TURN_RIGHT;
+			if (nextPosition.x > currentPosition.x)
+				return state.ACTION_TURN_RIGHT;
+		}	
+		if (currentDirection == MyAgentState.SOUTH)
+		{
+			if (nextPosition.y > currentPosition.y)
+				return state.ACTION_MOVE_FORWARD;
+			if (nextPosition.x > currentPosition.x)
+				return state.ACTION_TURN_LEFT;
+			if (nextPosition.x < currentPosition.x)
+				return state.ACTION_TURN_RIGHT;
+			if (nextPosition.y < currentPosition.y)
+				return state.ACTION_TURN_RIGHT;
+		}		
+		if (currentDirection == MyAgentState.NORTH)
+		{
+			if (nextPosition.y < currentPosition.y)
+				return state.ACTION_MOVE_FORWARD;
+			if (nextPosition.x > currentPosition.x)
+				return state.ACTION_TURN_RIGHT;
+			if (nextPosition.x < currentPosition.x)
+				return state.ACTION_TURN_LEFT;
+			if (nextPosition.y > currentPosition.y)
+				return state.ACTION_TURN_RIGHT;
+		}
+		return state.ACTION_SUCK; // dummy
     }
 	
     // moves the Agent to a random start position
     // uses percepts to update the Agent position - only the position, other percepts are ignored
     // returns a random action
     private Action moveToRandomStartPosition(DynamicPercept percept) {
-	int action = random_generator.nextInt(6);
-	initnialRandomActions--;
-	state.updatePosition(percept);
-	if(action==0) {
-	    state.agent_direction = ((state.agent_direction-1) % 4);
-	    if (state.agent_direction<0) 
-		state.agent_direction +=4;
-	    state.agent_last_action = state.ACTION_TURN_LEFT;
-	    return LIUVacuumEnvironment.ACTION_TURN_LEFT;
-	} else if (action==1) {
-	    state.agent_direction = ((state.agent_direction+1) % 4);
-	    state.agent_last_action = state.ACTION_TURN_RIGHT;
-	    return LIUVacuumEnvironment.ACTION_TURN_RIGHT;
-	} 
-	state.agent_last_action=state.ACTION_MOVE_FORWARD;
-	return LIUVacuumEnvironment.ACTION_MOVE_FORWARD;
+		int action = random_generator.nextInt(6);
+		initnialRandomActions--;
+		state.updatePosition(percept);
+		if(action==0) {
+			state.agent_direction = ((state.agent_direction-1) % 4);
+			if (state.agent_direction<0) 
+				state.agent_direction +=4;
+			state.agent_last_action = state.ACTION_TURN_LEFT;
+			return LIUVacuumEnvironment.ACTION_TURN_LEFT;
+		} else if (action==1) {
+			state.agent_direction = ((state.agent_direction+1) % 4);
+			state.agent_last_action = state.ACTION_TURN_RIGHT;
+			return LIUVacuumEnvironment.ACTION_TURN_RIGHT;
+		} 
+		state.agent_last_action=state.ACTION_MOVE_FORWARD;
+		return LIUVacuumEnvironment.ACTION_MOVE_FORWARD;
     }
 	
 	
     @Override
     public Action execute(Percept percept) {
-	/*
-	// DO NOT REMOVE this if condition!!!
+		// DO NOT REMOVE this if condition!!!
     	if (initnialRandomActions>0) {
-	return moveToRandomStartPosition((DynamicPercept) percept);
+			return moveToRandomStartPosition((DynamicPercept) percept);
     	} else if (initnialRandomActions==0) {
-	// process percept for the last step of the initial random actions
-	initnialRandomActions--;
-	state.updatePosition((DynamicPercept) percept);
-	System.out.println("Processing percepts after the last execution of moveToRandomStartPosition()");
-	state.agent_last_action=state.ACTION_SUCK;
-	return LIUVacuumEnvironment.ACTION_SUCK;
+			// process percept for the last step of the initial random actions
+			initnialRandomActions--;
+			state.updatePosition((DynamicPercept) percept);
+			System.out.println("Processing percepts after the last execution of moveToRandomStartPosition()");
+			state.agent_last_action=state.ACTION_SUCK;
+			return LIUVacuumEnvironment.ACTION_SUCK;
     	}
+
 		
-	*/
+	
     	// This example agent program will update the internal agent state while only moving forward.
     	// START HERE - code below should be modified!
-	/* 	
-    	System.out.println("x=" + state.agent_x_position);
-    	System.out.println("y=" + state.agent_y_position);
-    	System.out.println("dir=" + state.agent_direction);
-	*/
-	if (initStack)
-	{
-	    startPosition = new Coordinates(state.agent_x_position, state.agent_y_position);
-	    history.push(startPosition);
-	    initStack = false;
-	}
-		
-	iterationCounter--;
-	    
-	if (iterationCounter==0)
-	    return NoOpAction.NO_OP;
-
-	DynamicPercept p = (DynamicPercept) percept;
-	Boolean bump = (Boolean)p.getAttribute("bump");
-	Boolean dirt = (Boolean)p.getAttribute("dirt");
-	Boolean home = (Boolean)p.getAttribute("home");
-	System.out.println("percept: " + p);
-			
-	// State update based on the percept value and the last action
-	state.updatePosition((DynamicPercept)percept);
-	if (bump) {
-	    switch (state.agent_direction) {
-	    case MyAgentState.NORTH:
-		state.updateWorld(state.agent_x_position,state.agent_y_position-1,state.WALL);
-		break;
-	    case MyAgentState.EAST:
-		state.updateWorld(state.agent_x_position+1,state.agent_y_position,state.WALL);
-		break;
-	    case MyAgentState.SOUTH:
-		state.updateWorld(state.agent_x_position,state.agent_y_position+1,state.WALL);
-		break;
-	    case MyAgentState.WEST:
-		state.updateWorld(state.agent_x_position-1,state.agent_y_position,state.WALL);
-		break;
-	    }
-	}
-	if (dirt)
-	    state.updateWorld(state.agent_x_position,state.agent_y_position,state.DIRT);
-	else
-	    state.updateWorld(state.agent_x_position,state.agent_y_position,state.CLEAR);
-	    
-	//state.printWorldDebug();
-	currentPosition = new Coordinates(state.agent_x_position, state.agent_y_position);
-
-	// Next action selection based on the percept value
-	if (dirt)
-	{
-	    System.out.println("DIRT -> choosing SUCK action!");
-	    state.agent_last_action=state.ACTION_SUCK;
-	    return LIUVacuumEnvironment.ACTION_SUCK;
-	} 
-	else
-	{
-	    int nextAction;
-	    if (hasUnknownNeighbours(currentPosition))
-	    {
-		backtracking = false;
-		if ((state.agent_last_action == state.ACTION_MOVE_FORWARD || state.agent_last_action == state.ACTION_SUCK) && !bump)
-		    history.push(currentPosition);
-		//{
-/*
-		    Coordinates temp = history.peek();
-		    System.out.println("Top of stack: (" + temp.x + ", " + temp.y + ")");
-		    System.out.println("Current pos: (" + currentPosition.x + ", " + currentPosition.y + ")");
-*/
-		    //if ( !(temp.x == currentPosition.x && temp.y == currentPosition.y) )
-
-		    //}
-
-		Coordinates nextPosition = getNeighbour(state.agent_direction, currentPosition);
-		nextAction = getAction(state.agent_direction, currentPosition, nextPosition);		
-	    }
-	    else
-	    {
-		backtracking = true;
-		if (!(history.empty()))
+		if (initStack)
 		{
-		    //Coordinates temp = history.peek();
-		    //if ( !(temp.x == previousPosition.x && temp.y == previousPosition.y) )
-					
-		    previousPosition = history.peek();
-		    while (previousPosition.x == currentPosition.x && previousPosition.y == currentPosition.y && !history.empty())
-			previousPosition = history.pop();
-/*					
-		    System.out.println("Previous pos: (" + previousPosition.x + ", " + previousPosition.y + ")");
-		    System.out.println("Current pos: (" + currentPosition.x + ", " + currentPosition.y + ")");
-*/
-		    System.out.println("Previous pos: (" + previousPosition.x + ", " + previousPosition.y + ")");
-		    nextAction = getAction(state.agent_direction, currentPosition, previousPosition);
+			startPosition = new Coordinates(1, 1);
+			history.push(startPosition);
+			initStack = false;
 		}
+	
+		iterationCounter--;
+	    
+		if (iterationCounter==0)
+			return NoOpAction.NO_OP;
+
+		DynamicPercept p = (DynamicPercept) percept;
+		Boolean bump = (Boolean)p.getAttribute("bump");
+		Boolean dirt = (Boolean)p.getAttribute("dirt");
+		Boolean home = (Boolean)p.getAttribute("home");
+		System.out.println("percept: " + p);
+			
+		// State update based on the percept value and the last action
+		state.updatePosition((DynamicPercept)percept);
+		if (bump) {
+			switch (state.agent_direction) {
+			case MyAgentState.NORTH:
+				state.updateWorld(state.agent_x_position,state.agent_y_position-1,state.WALL);
+				break;
+			case MyAgentState.EAST:
+				state.updateWorld(state.agent_x_position+1,state.agent_y_position,state.WALL);
+				break;
+			case MyAgentState.SOUTH:
+				state.updateWorld(state.agent_x_position,state.agent_y_position+1,state.WALL);
+				break;
+			case MyAgentState.WEST:
+				state.updateWorld(state.agent_x_position-1,state.agent_y_position,state.WALL);
+				break;
+			}
+		}
+		if (dirt)
+			state.updateWorld(state.agent_x_position,state.agent_y_position,state.DIRT);
+		else
+			state.updateWorld(state.agent_x_position,state.agent_y_position,state.CLEAR);
+	    
+		//state.printWorldDebug();
+		currentPosition = new Coordinates(state.agent_x_position, state.agent_y_position);
+
+		// Next action selection based on the percept value
+		if (dirt)
+		{
+			System.out.println("DIRT -> choosing SUCK action!");
+			state.agent_last_action=state.ACTION_SUCK;
+			return LIUVacuumEnvironment.ACTION_SUCK;
+		} 
 		else
 		{
-		    if (!(currentPosition.x == startPosition.x && currentPosition.y == startPosition.y))
-		    {
-			nextAction = getAction(state.agent_direction, currentPosition, previousPosition);
-		    }
-		    else 
-		    {
-			System.out.println("Backtracked to start position");
-			return NoOpAction.NO_OP;
-		    }
-		}
-	    }
-	    
-	    Iterator<Coordinates> i = history.iterator();
-	    while(i.hasNext())
-	    {
-		Coordinates c = i.next();
-		System.out.println(c.x + ", " + c.y);
-	    } 
+			int nextAction;
+			if (hasUnknownNeighbours(currentPosition) && !history.empty())
+			{
+
+				Coordinates topOfStack = history.peek();
+				if ((state.agent_last_action == state.ACTION_MOVE_FORWARD || state.agent_last_action == state.ACTION_SUCK) && !bump &&
+					!(currentPosition.x == topOfStack.x && currentPosition.y == topOfStack.y))
+					history.push(currentPosition);
+
+				Coordinates nextPosition = getNeighbour(state.agent_direction, currentPosition);
+				nextAction = getAction(state.agent_direction, currentPosition, nextPosition);		
+			}
+			else
+			{
+
+				if (!(history.empty()))
+				{
+					previousPosition = history.peek();
+					while (previousPosition.x == currentPosition.x && previousPosition.y == currentPosition.y && !history.empty())
+						previousPosition = history.pop();
+					nextAction = getAction(state.agent_direction, currentPosition, previousPosition);
+				}
+				else
+				{
+					if (!(currentPosition.x == startPosition.x && currentPosition.y == startPosition.y))
+					{
+						nextAction = getAction(state.agent_direction, currentPosition, previousPosition);
+					}
+					else 
+					{
+						System.out.println("Backtracked to start position");			
+						System.out.println("start pos: " + startPosition.x + ", " + startPosition.y);
+						System.out.println("current pos: " + currentPosition.x + ", " + currentPosition.y);
+						return NoOpAction.NO_OP;
+					}
+				}
+			}
+
+			Iterator<Coordinates> i = history.iterator();
+			while(i.hasNext())
+			{
+				Coordinates c = i.next();
+				System.out.println(c.x + ", " + c.y);
+			} 
 		
-	    System.out.println("Stack size: " + history.size());
-	    //System.out.println(currentPosition.x + ", " + currentPosition.y);
-	    switch (nextAction)
-	    {
-	    case 1:
-		state.agent_last_action = state.ACTION_MOVE_FORWARD;
-		return LIUVacuumEnvironment.ACTION_MOVE_FORWARD;
-	    case 3:
-		state.agent_direction = ((state.agent_direction - 1) % 4);
-		if (state.agent_direction < 0) 
-		    state.agent_direction += 4;
-		state.agent_last_action = state.ACTION_TURN_LEFT;
-		return LIUVacuumEnvironment.ACTION_TURN_LEFT;
-	    case 2:
-		state.agent_direction = ((state.agent_direction + 1) % 4);
-		state.agent_last_action = state.ACTION_TURN_RIGHT;
-		return LIUVacuumEnvironment.ACTION_TURN_RIGHT;
-	    }
-	}
-	return LIUVacuumEnvironment.ACTION_SUCK;
+			System.out.println("Stack size: " + history.size());
+
+			if (history.empty() && currentPosition.x == startPosition.x && currentPosition.y == startPosition.y)
+				return NoOpAction.NO_OP;
+			switch (nextAction)
+			{
+			case 1:
+				state.agent_last_action = state.ACTION_MOVE_FORWARD;
+				return LIUVacuumEnvironment.ACTION_MOVE_FORWARD;
+			case 3:
+				state.agent_direction = ((state.agent_direction - 1) % 4);
+				if (state.agent_direction < 0) 
+					state.agent_direction += 4;
+				state.agent_last_action = state.ACTION_TURN_LEFT;
+				return LIUVacuumEnvironment.ACTION_TURN_LEFT;
+			case 2:
+				state.agent_direction = ((state.agent_direction + 1) % 4);
+				state.agent_last_action = state.ACTION_TURN_RIGHT;
+				return LIUVacuumEnvironment.ACTION_TURN_RIGHT;
+			}
+		}
+		return LIUVacuumEnvironment.ACTION_SUCK;
     }
 }
 
@@ -411,7 +393,7 @@ class Coordinates {
     public int x;
     public int y;
     Coordinates(int x_, int y_) {
-	this.x = x_;
-	this.y = y_;
+		this.x = x_;
+		this.y = y_;
     }
 }
