@@ -108,6 +108,7 @@ class MyAgentProgram implements AgentProgram {
     private Coordinates currentPosition;
     private Coordinates previousPosition;
     private Coordinates startPosition;
+	int nextAction;
     private boolean initStack = true;
 
     private boolean hasUnknownNeighbours(Coordinates coords)
@@ -313,41 +314,32 @@ class MyAgentProgram implements AgentProgram {
 		} 
 		else
 		{
-			int nextAction;
 			if (hasUnknownNeighbours(currentPosition) && !history.empty())
 			{
-
 				Coordinates topOfStack = history.peek();
 				if ((state.agent_last_action == state.ACTION_MOVE_FORWARD || state.agent_last_action == state.ACTION_SUCK) && !bump &&
 					!(currentPosition.x == topOfStack.x && currentPosition.y == topOfStack.y))
+				{
 					history.push(currentPosition);
+				}
 
 				Coordinates nextPosition = getNeighbour(state.agent_direction, currentPosition);
 				nextAction = getAction(state.agent_direction, currentPosition, nextPosition);		
 			}
 			else
 			{
-
 				if (!(history.empty()))
 				{
 					previousPosition = history.peek();
 					while (previousPosition.x == currentPosition.x && previousPosition.y == currentPosition.y && !history.empty())
 						previousPosition = history.pop();
+					
 					nextAction = getAction(state.agent_direction, currentPosition, previousPosition);
 				}
 				else
 				{
 					if (!(currentPosition.x == startPosition.x && currentPosition.y == startPosition.y))
-					{
 						nextAction = getAction(state.agent_direction, currentPosition, previousPosition);
-					}
-					else 
-					{
-						System.out.println("Backtracked to start position");			
-						System.out.println("start pos: " + startPosition.x + ", " + startPosition.y);
-						System.out.println("current pos: " + currentPosition.x + ", " + currentPosition.y);
-						return NoOpAction.NO_OP;
-					}
 				}
 			}
 
@@ -362,6 +354,7 @@ class MyAgentProgram implements AgentProgram {
 
 			if (history.empty() && currentPosition.x == startPosition.x && currentPosition.y == startPosition.y)
 				return NoOpAction.NO_OP;
+			
 			switch (nextAction)
 			{
 			case 1:
