@@ -59,6 +59,25 @@ since we have already observed that there is both a pump failure and water leak.
 d)
 "PumpFailureWarning=F, WaterLeak=F, WaterLeakWarning=F and IcyWeather=F but you are not really sure about a pump failure."
 
+Since all values except PF are given, we know the probability for meltdown and not meltdown given these values and the only unknown variable is PumpFailure.
+We sum all the combinations of P(M) and P(-M) with all the combinations of PumpFailure, combined with the probabilities of PumpFailure being the conditioned value.
+
+a * (P(M | -WL, -IW, -WLW, -PFW, PF) * P(PF) + P(M | -WL, -IW, -WLW, -PFW, -PF) * P(-PF)) + a *(P(-M | -WL, -IW, -WLW, -PFW, PF) * P(PF) + P(-M | -WL, -IW, -WLW, -PFW, -PF) * P(-PF)) = 1
+
+= a(0.15 * 0.01156 + 0.001 * 0.98844) + a(0.85 * 0.01156 + 0.999 * 0.98844) = 1 -> a = 1.0
+
+P(PF) = 0.01156
+P(-PF) = 0.98844
+
+// -Meltdown
+In [10]: (0.85 * 0.01156 + 0.999 * 0.98844)
+Out[10]: 0.99727756
+
+// Meltdown
+In [11]: (0.15 * 0.01156 + 0.001 * 0.98844)
+Out[11]: 0.00272244
+
+
 P(X | e) = a * P(X, e) = a sum(P(X,e,y) where e is observed values and y is unknown values
 
 P(Meltdown | -WL, -WLW, -IW) * P(-PumpFailureWarnning | PumpFailure) * P(-PumpFailureWarning | -PumpFailure)
@@ -70,7 +89,28 @@ P(Meltdown = F | PFW=F, WL=F, WLW=F, IW=F)
 
 Part III
 
-a) The probability of surviving decreases since the probability of the variable battery is conditioned by the variable radio - observing the value of radio as false raises the probability of not having battery, which in turn effects subsequent variables conditioned by the variable battery, making the probability of the variable 'survives' decrease.
+1) - done
+
+2) 
+The probability of surviving decreases since the probability of the variable radio is conditioned by the variable battery - observing the value of radio as false raises the probability of not having battery, which in turn effects subsequent variables conditioned by the variable battery, making the probability of the variable 'survives' decrease.
+
+-----
+
+How does the bicycle change the owner's chances of survival? 
+P(Survive) before bicycle = 0.99004
+P(Survive after introducing the bicycle = 0.99506
+
+We see that the probability of survival increases marginally after introducing the bicycle into the network.
+
+---
+
+It is possible to model any function in propositional logic with Bayesian Networks. What does this fact say about the complexity of exact inference in Bayesian Networks? What alternatives are there to exact inference? 
+
+It can be very complex to do exact inference in a bayesian network, since it is at the same order of complexity as a SAT problem, i.e. the a problem that is 
+not solvable in polynomial time since solving the problem takes O(2^n) time. Alternatives to exact inference would be relaxing the problem if you can tell that it is conditioned on something that is
+very likely to be either false or true. 
+
+2) 
 
 b) Meltdown and pump failure warning are conditioned on Pump failure and independent of each other:
 P(MeltDown, PumpFailureWarning|PumpFailure) = P(MeltDown|PumpFailure) * P(PumpFailureWarning|PumpFailure)
