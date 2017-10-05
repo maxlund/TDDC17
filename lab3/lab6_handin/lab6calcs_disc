@@ -120,7 +120,12 @@ P(Ignition, Radio|Battery) = P(Ignition|Battery) * P(Radio|Battery)
 Part IV
 
 2.
-a) Depending on the probabilities set for Mr.HS failing to react properly to the warnings, and depending on the new, lower probability for a pump failure with a new pump, a new and better pump could potentially compensate for Mr HS's lack of competence and reaction. However, when tuning the parameters in our model we found that a minor change of the experts reactivity and competence will reduce the probability more significantly than what a new pump can do.
+a) Depending on the probabilities set for Mr.HS failing to react properly to the warnings, and depending on the new, lower probability for a pump failure with a new pump, a new and better pump could potentially compensate for Mr HS's lack of competence and reaction. However, when tuning the parameters in our model we found that a minor change of Mr. HS's reactivity and competence will reduce the probability more significantly than what a new pump can do.
 
+b) The probability that Homer survives with a car is P(Survives | HomerFails = T) = 0.8936. We answer this question by adding a 'survives' node and the nodes representing the car from the previous network, using the same properties. 
+
+c) That prior observations that are the basis of assumptions for probabilities will also hold in the future. People are not static, i.e. they change over time as does their skills and behaviours, unlike the probability of something like icy weather in a certain location at a certain time of the year.
+
+d) We make the probability of P(IcyWeatherAtDay) be conditioned on several other nodes IcyWeatherAtDay-n, where n is number of days before IcyWeatherAtDay (all these nodes "point" to IcyWeatherAtDay). These nodes are in turn conditioned on all nodes IcyWeatherAtDay-n, which have an 'n' smaller than itself. The idea is that icy weather at any given day is conditioned on all the previous days before it that we track. 
 
 
