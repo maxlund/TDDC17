@@ -63,8 +63,6 @@
    )
 
    ;; The goal of the problem:
-   ;; (at pencil1 room3)(at pencil2 room3)(at pencil3 room3)
-
    (:goal (and (at shakey1 room1) (at box1 room3)(not(switch light1)) (not(switch light2)) (not(switch light3))
      	     	 (at pencil1 room3) (at pencil2 room1) (at pencil3 room3)
 		 (at toy1 room1) (at toy2 room1)))

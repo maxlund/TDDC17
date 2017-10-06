@@ -59,12 +59,14 @@
 			(switch ?l))
      :effect (and (holding_right ?s) (holding_right_object ?s ?so) (not(at ?so ?r))))
 
+  ;; Shakey drops what he's holding in left gripper
   (:action drop_left
      :parameters (?s ?so ?r)
      :precondition (and (shakey ?s)(small_object ?so)(room ?r)
      		   	(at ?s ?r)(holding_left_object ?s ?so))
      :effect (and (at ?so ?r)(not (holding_left ?s))(not (holding_left_object ?s ?so))))
 
+  ;; Shakey drops what he's holding in left gripper	 
   (:action drop_right
      :parameters (?s ?so ?r)
      :precondition (and (shakey ?s)(small_object ?so)(room ?r)
