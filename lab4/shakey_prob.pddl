@@ -1,9 +1,5 @@
-
-;; This is a small problem instance for the standard Logistics domain,
-;; as defined in "logistic.pddl".
-
 (define (problem C3_2)
-  (:domain logistics)
+  (:domain shakeyworld)
   (:objects
    room1 room2 room3				;; there are three rooms,
    light1 light2 light3		      		;; one light in each room

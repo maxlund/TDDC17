@@ -1,4 +1,4 @@
-(define (domain logistics)
+(define (domain shakeyworld)
   (:requirements :strips)
   (:predicates
 
@@ -22,7 +22,9 @@
    (holding_right_object ?s ?so) ;; shakey is holding specific object with right gripper
    )
 
-  ;; Shakeys six Actions: walk, push a box, climbe up and down from a box, turn on and off a light
+  ;; Shakeys actions: walk, push a box, climbe up and down from a box, turn on and off a light,
+  ;;   	     	      grip something with left or right gripper, and releasing something with
+  ;;		      left or right gripper.
 
 
   ;; To walk from a room to another room, there must be a wide or narrow door between the rooms,
